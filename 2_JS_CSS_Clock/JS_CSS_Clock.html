@@ -75,7 +75,7 @@
         background-color: red;
     }
 
-    .fast {
+    .resetTransition {
         transition: all 0s;
     }
 
@@ -85,6 +85,7 @@
     const secondHand = document.querySelector('.second-hand');
     const minHand = document.querySelector('.min-hand');
     const hourHand = document.querySelector('.hour-hand');
+    const hands = document.querySelectorAll('.hand');
 
     function setDate() {
 
@@ -103,27 +104,11 @@
         hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
 
         if (seconds === 0) {
-            secondHand.classList.add('fast');
+            hands.forEach(hand => hand.classList.add('resetTransition'));
         }
 
         if (seconds === 1) {
-            secondHand.classList.remove('fast')
-        }
-
-        if (minutes === 0) {
-            minHand.classList.add('fast');
-        }
-
-        if (minutes === 1) {
-            minHand.classList.remove('fast');
-        }
-
-        if (hours === 0 || hours === 12) {
-            hourHand.classList.add('fast');
-        }
-
-        if (hours === 1 || hours === 13) {
-            hourHand.classList.remove('fast')
+            hands.forEach(hand => hand.classList.remove('resetTransition'));
         }
     }
 
