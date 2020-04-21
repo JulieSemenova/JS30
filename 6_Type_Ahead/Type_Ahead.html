@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+        const endpoint =
+          "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+        const locations = [];
+
+        fetch(endpoint)
+          .then((res) => res.json())
+          .then((data) => locations.push(...data));
+
+        function findMatches(wordToMatch, locations) {
+          const regex = new RegExp(wordToMatch, "ig");
+          return locations.filter((location) => {
+              return location.city.match(regex) || location.state.match(regex);
+          });
+        }
+
+        const searchInput = document.querySelector('.search');
+        const suggestions = document.querySelector('.suggestions');
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function displayMatches() {
+          const matchArray = findMatches(this.value, locations);
+          const regex = new RegExp(this.value, 'gi');
+
+            let suggestionsNode;
+            suggestionsNode = matchArray.map(location => {
+                const template = `<span class="hl">${this.value}</span>`;
+                const cityName = location.city.replace(regex, template);
+                const stateName = location.state.replace(regex, template);
+
+                return `
+                  <li>
+                    <span class="name">${cityName}, ${stateName}</span>
+                    <span class="population">${numberWithCommas(location.population)}</span>
+                  </li>
+                `
+            }).join('');
+
+            suggestions.innerHTML = suggestionsNode;
+        }
+
+        searchInput.addEventListener('change', displayMatches);
+        searchInput.addEventListener('keyup', displayMatches);
+    </script>
+  </body>
+</html>
